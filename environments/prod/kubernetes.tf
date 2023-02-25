@@ -5,7 +5,7 @@ locals {
     // production
     //
     {
-      name          = "prod-sbg5-1"
+      name          = "prd-sbg5-1"
       region        = "SBG5"
       network       = "back"
       update_policy = "MINIMAL_DOWNTIME"
