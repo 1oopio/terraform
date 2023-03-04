@@ -4,14 +4,14 @@ locals {
   }
 }
 
-resource "random_id" "hex_color" {
+resource "random_id" "hex_color_tag" {
   byte_length = 3
   count       = length(local.ansible_roles_map)
 }
 
 locals {
   tag_colors = {
-    for i, v in var.ansible_roles : v => random_id.hex_color[i].hex
+    for i, v in var.ansible_roles : v => random_id.hex_color_tag[i].hex
   }
 }
 

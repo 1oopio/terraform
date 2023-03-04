@@ -60,9 +60,66 @@ resource "openstack_compute_instance_v2" "vm" {
   }
 }
 
-/* resource "netbox_virtual_machine" "vm" {
+data "openstack_compute_flavor_v2" "flavor" {
+  name = var.flavor_name
+}
+
+resource "netbox_virtual_machine" "vm" {
   cluster_id = var.netbox_cluster_id
+  role_id    = var.netbox_role_id
   name       = var.name
   status     = "active"
+  tags       = var.ansible_roles
+  tenant_id  = var.netbox_tenant_id
+  site_id    = var.netbox_site_id
+
+  vcpus        = data.openstack_compute_flavor_v2.flavor.vcpus
+  memory_mb    = data.openstack_compute_flavor_v2.flavor.ram
+  disk_size_gb = data.openstack_compute_flavor_v2.flavor.disk
+
+  depends_on = [openstack_compute_instance_v2.vm]
 }
- */
+
+locals {
+  network_map = {
+    for network in openstack_compute_instance_v2.vm.network : network.name => network
+  }
+}
+
+resource "netbox_interface" "interface" {
+  virtual_machine_id = netbox_virtual_machine.vm.id
+  for_each           = local.network_map
+  enabled            = true
+  name               = each.value.name
+  mac_address        = upper(each.value.mac)
+  mode               = "access"
+  untagged_vlan      = contains(keys(var.netbox_vlans), each.value.name) ? var.netbox_vlans[each.value.name] : null
+
+  depends_on = [netbox_virtual_machine.vm]
+}
+
+resource "netbox_ip_address" "ip" {
+  interface_id = netbox_interface.interface[each.key].id
+  for_each     = local.network_map
+  ip_address = format("%s/%d",
+    each.value.fixed_ip_v4,
+    contains(keys(var.private_networks), each.value.name) ? var.private_networks[each.value.name].cidr : 32,
+  )
+  status     = "active"
+  tenant_id  = var.netbox_tenant_id
+  depends_on = [netbox_interface.interface]
+}
+
+resource "netbox_primary_ip" "primary_ip" {
+  virtual_machine_id = netbox_virtual_machine.vm.id
+  ip_address_id      = netbox_ip_address.ip["Ext-Net"].id
+
+  depends_on = [netbox_ip_address.ip]
+}
+
+resource "netbox_service" "ssh" {
+  virtual_machine_id = netbox_virtual_machine.vm.id
+  name               = "ssh"
+  ports              = [31337]
+  protocol           = "tcp"
+}

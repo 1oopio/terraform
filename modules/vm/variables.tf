@@ -23,7 +23,34 @@ variable "region" {
   type = string
 }
 
-/* variable "netbox_cluster_id" {
+variable "netbox_cluster_id" {
   type = number
 }
- */
+
+variable "netbox_role_id" {
+  type = number
+}
+
+variable "netbox_site_id" {
+  type = number
+}
+
+variable "netbox_tenant_id" {
+  type = number
+}
+
+variable "ansible_roles" {
+  type = list(string)
+}
+
+variable "netbox_vlans" {
+  type = map(number)
+}
+
+variable "private_networks" {
+  type = map(object({
+    vlan_id = number
+    subnet  = string
+    cidr    = number
+  }))
+}

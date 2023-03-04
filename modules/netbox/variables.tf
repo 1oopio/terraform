@@ -5,3 +5,7 @@ variable "ansible_roles" {
 variable "sites" {
   type = list(string)
 }
+
+variable "device_roles" {
+  type = list(string)
+}

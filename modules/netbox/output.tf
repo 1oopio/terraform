@@ -13,3 +13,9 @@ output "sites" {
     for i in netbox_site.site : i.name => i.id
   }
 }
+
+output "device_roles" {
+  value = {
+    for i in netbox_device_role.role : i.name => i.id
+  }
+}
