@@ -27,3 +27,11 @@ variable "no_gateway" {
   type    = bool
   default = true
 }
+
+variable "netbox_tenant_id" {
+  type = string
+}
+
+variable "cidr" {
+  type = number
+}

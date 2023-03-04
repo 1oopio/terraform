@@ -4,25 +4,22 @@ locals {
     // all backend services are running here
     back = [
       {
-        region  = "SBG5",
-        start   = "10.200.116.94"
-        end     = "10.200.139.161"
-        network = "10.200.0.0/16",
-        dhcp    = true
+        region = "SBG5",
+        start  = "10.200.116.94"
+        end    = "10.200.139.161"
+        dhcp   = true
       },
       {
-        region  = "BHS5",
-        start   = "10.200.0.2"
-        end     = "10.200.23.70"
-        network = "10.200.0.0/16",
-        dhcp    = true
+        region = "BHS5",
+        start  = "10.200.0.2"
+        end    = "10.200.23.70"
+        dhcp   = true
       },
       {
-        region  = "SGP1",
-        start   = "10.200.162.233"
-        end     = "10.200.186.44"
-        network = "10.200.0.0/16",
-        dhcp    = true
+        region = "SGP1",
+        start  = "10.200.162.233"
+        end    = "10.200.186.44"
+        dhcp   = true
       }
     ],
   }
@@ -50,8 +47,9 @@ locals {
         region  = subnet.region
         start   = subnet.start
         end     = subnet.end
-        network = subnet.network
+        network = format("%s/%d", local.private_networks[k].subnet, local.private_networks[k].cidr)
         dhcp    = subnet.dhcp
+        cidr    = local.private_networks[k].cidr
         //routes  = subnet.routes
       }
     }
@@ -60,14 +58,19 @@ locals {
 
 // creates all subnets
 module "subnets" {
-  source     = "../../modules/subnet"
-  for_each   = local.network_subnets
-  network_id = local.private_networks_id[each.value.name]
-  region     = each.value.region
-  start      = each.value.start
-  end        = each.value.end
-  network    = each.value.network
-  dhcp       = each.value.dhcp
+  source           = "../../modules/subnet"
+  for_each         = local.network_subnets
+  network_id       = local.private_networks_id[each.value.name]
+  region           = each.value.region
+  start            = each.value.start
+  end              = each.value.end
+  network          = each.value.network
+  dhcp             = each.value.dhcp
+  netbox_tenant_id = module.netbox.tenant_id
+  cidr             = each.value.cidr
 
-  depends_on = [module.private_networks]
+  depends_on = [
+    module.netbox,
+    module.private_networks
+  ]
 }
