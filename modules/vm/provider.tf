@@ -9,5 +9,10 @@ terraform {
       source  = "terraform-provider-openstack/openstack"
       version = "~> 1.48.0"
     }
+
+    netbox = {
+      source  = "e-breuninger/netbox"
+      version = "~> 3.1.0"
+    }
   }
 }

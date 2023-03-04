@@ -60,3 +60,9 @@ resource "openstack_compute_instance_v2" "vm" {
   }
 }
 
+/* resource "netbox_virtual_machine" "vm" {
+  cluster_id = var.netbox_cluster_id
+  name       = var.name
+  status     = "active"
+}
+ */

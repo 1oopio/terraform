@@ -6,8 +6,8 @@ locals {
   ]
 }
 
-
 module "netbox" {
   source        = "../../modules/netbox"
   ansible_roles = local.ansible_roles
+  sites         = local.regions
 }

@@ -8,8 +8,7 @@ variable "image_name" {
 }
 
 variable "flavor_name" {
-  type    = string
-  default = "s1-2"
+  type = string
 }
 
 variable "key_pair" {
@@ -23,3 +22,8 @@ variable "network" {
 variable "region" {
   type = string
 }
+
+/* variable "netbox_cluster_id" {
+  type = number
+}
+ */

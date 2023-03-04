@@ -27,10 +27,12 @@ module "vm" {
   flavor_name = each.value.flavor_name
   image_name  = each.value.image_name
   key_pair    = each.value.key_pair
+  //netbox_cluster_id = module.netbox.clusters[each.value.region]
 
   depends_on = [
     module.private_networks,
     module.subnets,
     module.ssh_keys,
+    //module.netbox
   ]
 }
