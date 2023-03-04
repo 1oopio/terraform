@@ -11,3 +11,15 @@ variable "flavor_name" {
   type    = string
   default = "s1-2"
 }
+
+variable "key_pair" {
+  type = string
+}
+
+variable "network" {
+  type = string
+}
+
+variable "region" {
+  type = string
+}
