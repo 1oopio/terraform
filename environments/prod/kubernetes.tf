@@ -13,8 +13,8 @@ locals {
         {
           name           = "np-d2-4-f1"
           flavor_name    = "d2-4"
-          max_nodes      = 3
-          min_nodes      = 3
+          max_nodes      = 4
+          min_nodes      = 4
           monthly_billed = true
           autoscale      = false
           labels = {
