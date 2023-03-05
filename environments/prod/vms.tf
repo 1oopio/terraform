@@ -8,6 +8,7 @@ locals {
       image_name    = "Ubuntu 22.04"
       key_pair      = "ahsoka"
       ansible_roles = ["base"]
+      user_data     = data.template_file.userdata.rendered
     }
   ]
 }
@@ -23,7 +24,7 @@ locals {
 }
 
 // create all vms
-module "vm" {
+module "vms" {
   for_each          = local.vm_map
   source            = "../../modules/vm"
   name              = each.value.name
@@ -39,11 +40,53 @@ module "vm" {
   netbox_vlans      = local.netbox_vlans
   private_networks  = local.private_networks
   netbox_site_id    = module.netbox.sites[each.value.region]
+  user_data         = data.template_file.userdata.rendered
 
   depends_on = [
-    module.private_networks,
-    module.subnets,
     module.ssh_keys,
-    module.netbox
   ]
+}
+
+data "template_file" "setup" {
+  template = <<SETUP
+#!/bin/bash
+
+FALLBACK_USER=ahsoka
+SSH_PORT=31337
+
+# create the new fallback user
+useradd -m \
+    -d /home/$FALLBACK_USER \
+    -G sudo \
+    -u 1001 \
+    -s /bin/bash \
+    -p '$6$/MDc6GNT67he48y9$6k9YQvZ1Xp68icb375VTOaJaH9.Hk9RlwbI9CANKm7qzgM3q9IWFXe4b.EWoWRFJ6Pi.6UcBsZacSRU3Qtc.V1' \
+    $FALLBACK_USER
+
+# deploy the fallback ssh key
+mkdir /home/$FALLBACK_USER/.ssh
+chown $FALLBACK_USER:$FALLBACK_USER /home/$FALLBACK_USER/.ssh
+echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAO9HrahWftwj9UCML7L8eUJPiWQsPy1SaE4K/yC6ben ahsoka" >> /home/$FALLBACK_USER/.ssh/authorized_keys
+chown $FALLBACK_USER:$FALLBACK_USER /home/$FALLBACK_USER/.ssh/authorized_keys
+
+# remap ssh port to 31337
+sed -i "s/#Port 22/Port $SSH_PORT/g" /etc/ssh/sshd_config
+systemctl restart sshd
+
+# remove the user ubuntu
+deluser --remove-home ubuntu
+SETUP
+}
+
+data "template_file" "userdata" {
+  template = <<CLOUDCONFIG
+#cloud-config
+write_files:
+  - path: /tmp/setup/run.sh
+    permissions: '0755'
+    content: |
+      ${indent(6, data.template_file.setup.rendered)}
+runcmd:
+   - /tmp/setup/run.sh
+CLOUDCONFIG
 }

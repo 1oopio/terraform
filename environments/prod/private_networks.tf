@@ -18,8 +18,4 @@ module "private_networks" {
   netbox_tenant_id = module.netbox.tenant_id
   subnet           = each.value.subnet
   cidr             = each.value.cidr
-
-  depends_on = [
-    module.netbox
-  ]
 }

@@ -54,3 +54,7 @@ variable "private_networks" {
     cidr    = number
   }))
 }
+
+variable "user_data" {
+  type = string
+}

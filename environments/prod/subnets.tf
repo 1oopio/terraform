@@ -68,9 +68,4 @@ module "subnets" {
   dhcp             = each.value.dhcp
   netbox_tenant_id = module.netbox.tenant_id
   cidr             = each.value.cidr
-
-  depends_on = [
-    module.netbox,
-    module.private_networks
-  ]
 }

@@ -94,11 +94,6 @@ module "clusters" {
   region             = each.value.region
   update_policy      = each.value.update_policy
   private_network_id = local.private_networks_regions_attributes[each.value.network][each.value.region].openstackid
-
-  depends_on = [
-    module.private_networks,
-    module.subnets
-  ]
 }
 
 // creates all kubernetes nodepools
@@ -115,5 +110,7 @@ module "nodepools" {
   labels         = each.value.labels
   taints         = each.value.taints
 
-  depends_on = [module.clusters]
+  depends_on = [
+    module.clusters
+  ]
 }

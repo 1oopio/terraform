@@ -1,12 +1,13 @@
 locals {
   ansible_roles = [
     "base",
-    "haproxy",
-    "docker"
+    "haproxy_stratum",
+    "docker",
+    "test"
   ]
 
   device_roles = [
-    "Linux Server"
+    "Linux Server",
   ]
 }
 
