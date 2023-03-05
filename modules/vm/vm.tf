@@ -6,6 +6,7 @@ resource "openstack_compute_instance_v2" "vm" {
   region          = var.region
   security_groups = ["default"]
   user_data       = var.user_data
+  power_state     = var.status == "offline" ? "shutoff" : var.status
 
   network {
     name = "Ext-Net"
@@ -30,7 +31,7 @@ resource "netbox_virtual_machine" "vm" {
   cluster_id = var.netbox_cluster_id
   role_id    = var.netbox_role_id
   name       = var.name
-  status     = "active"
+  status     = var.status
   tags       = var.ansible_roles
   tenant_id  = var.netbox_tenant_id
   site_id    = var.netbox_site_id

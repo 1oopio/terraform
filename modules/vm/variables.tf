@@ -58,3 +58,12 @@ variable "private_networks" {
 variable "user_data" {
   type = string
 }
+
+variable "status" {
+  type = string
+  validation {
+    condition     = can(regex("^(active|offline)$", var.status))
+    error_message = "status must be active or offline"
+  }
+  description = "values: active, offline"
+}

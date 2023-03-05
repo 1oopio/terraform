@@ -2,6 +2,7 @@ locals {
   vms = [
     {
       name          = "vm1"
+      status        = "active"
       region        = "SBG5"
       network       = "back"
       flavor_name   = "d2-2"
@@ -27,6 +28,7 @@ locals {
 module "vms" {
   for_each          = local.vm_map
   source            = "../../modules/vm"
+  status            = each.value.status
   name              = each.value.name
   region            = each.value.region
   network           = each.value.network

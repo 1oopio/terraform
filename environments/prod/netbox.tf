@@ -3,7 +3,6 @@ locals {
     "base",
     "haproxy_stratum",
     "docker",
-    "test"
   ]
 
   device_roles = [
