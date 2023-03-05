@@ -19,6 +19,7 @@ locals {
           autoscale      = false
           labels = {
             "nodepooltype" = "fixed"
+            "usecase"      = "mgmt"
           }
           taints = []
         },
