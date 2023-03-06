@@ -80,3 +80,85 @@ resource "netbox_service" "ssh" {
   ports              = [31337]
   protocol           = "tcp"
 }
+
+
+resource "kubernetes_endpoints_v1" "k8s_endpoints" {
+  // only create resource if server has an interface in the back network
+  count = contains(keys(local.network_map), "back") ? 1 : 0
+
+  metadata {
+    name      = var.name
+    namespace = "node-monitoring"
+    labels = {
+      app = var.name
+    }
+  }
+
+  subset {
+    address {
+      ip = local.network_map["back"].fixed_ip_v4
+    }
+
+    port {
+      name     = "metrics"
+      port     = 9100
+      protocol = "TCP"
+    }
+  }
+}
+
+resource "kubernetes_service_v1" "k8s_service" {
+  // only create resource if server has an interface in the back network
+  count = contains(keys(local.network_map), "back") ? 1 : 0
+
+  metadata {
+    name      = var.name
+    namespace = "node-monitoring"
+    labels = {
+      app = var.name
+    }
+  }
+
+  spec {
+    type          = "ExternalName"
+    external_name = local.network_map["back"].fixed_ip_v4
+    port {
+      name        = "metrics"
+      port        = 9100
+      protocol    = "TCP"
+      target_port = 9100
+    }
+  }
+}
+
+resource "kubernetes_manifest" "service_monitor" {
+  // only create resource if server has an interface in the back network
+  count = contains(keys(local.network_map), "back") ? 1 : 0
+
+  manifest = {
+    apiVersion = "monitoring.coreos.com/v1"
+    kind       = "ServiceMonitor"
+    metadata = {
+      name      = var.name
+      namespace = "node-monitoring"
+      labels = {
+        app = var.name
+      }
+    }
+    spec = {
+      //jobLabel = "app"
+      selector = {
+        matchLabels = {
+          app = var.name
+        }
+      }
+      endpoints = [
+        {
+          port        = "metrics"
+          interval    = "15s"
+          honorLabels = true
+        }
+      ]
+    }
+  }
+}

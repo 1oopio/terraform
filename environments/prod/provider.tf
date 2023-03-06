@@ -22,6 +22,11 @@ terraform {
       source  = "e-breuninger/netbox"
       version = "~> 3.1.0"
     }
+
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.18.1"
+    }
   }
 }
 
@@ -37,4 +42,12 @@ provider "openstack" {
 
 provider "netbox" {
   server_url = "https://netbox.tarnished.ch"
+}
+
+provider "kubernetes" {
+  host = var.K8S_TERRAFORM_HOST
+
+  client_certificate     = base64decode(var.K8S_TERRAFORM_CLIENT_CERTIFICATE)
+  client_key             = base64decode(var.K8S_TERRAFORM_CLIENT_KEY)
+  cluster_ca_certificate = base64decode(var.K8S_TERRAFORM_CLUSTER_CA_CERTIFICATE)
 }

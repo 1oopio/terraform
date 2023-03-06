@@ -14,5 +14,10 @@ terraform {
       source  = "e-breuninger/netbox"
       version = "~> 3.1.0"
     }
+
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.18.1"
+    }
   }
 }
