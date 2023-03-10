@@ -11,10 +11,10 @@ locals {
       update_policy = "MINIMAL_DOWNTIME"
       nodepools = [
         {
-          name           = "np-d2-4-f1"
-          flavor_name    = "d2-4"
-          max_nodes      = 4
-          min_nodes      = 4
+          name           = "np-d2-8-f1"
+          flavor_name    = "d2-8"
+          max_nodes      = 2
+          min_nodes      = 2
           monthly_billed = true
           autoscale      = false
           labels = {

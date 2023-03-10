@@ -1,3 +1,3 @@
 output "service_name" {
-  value = "6625e12681724bbc9562e49377b96a89"
+  value = "c95e1b98dba840768b71c25dcba88583"
 }
