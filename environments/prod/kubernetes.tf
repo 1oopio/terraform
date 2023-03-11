@@ -23,6 +23,19 @@ locals {
           }
           taints = []
         },
+        {
+          name           = "np-d2-4-f1"
+          flavor_name    = "d2-4"
+          max_nodes      = 1
+          min_nodes      = 1
+          monthly_billed = true
+          autoscale      = false
+          labels = {
+            "nodepooltype" = "fixed"
+            "usecase"      = "pool"
+          }
+          taints = []
+        },
         /* {
           name           = "np-b2-7-a1"
           flavor_name    = "b2-7"
