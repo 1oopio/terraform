@@ -1,7 +1,7 @@
 locals {
   vms = [
-    /* {
-      name          = "vm1"
+    {
+      name          = "test-sbg5-1"
       status        = "active"
       region        = "SBG5"
       network       = "back"
@@ -10,7 +10,7 @@ locals {
       key_pair      = "ahsoka"
       ansible_roles = ["base"]
       user_data     = data.template_file.userdata.rendered
-    } */
+    }
   ]
 }
 
