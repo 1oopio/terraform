@@ -8,7 +8,7 @@ locals {
       flavor_name   = "d2-2"
       image_name    = "Ubuntu 22.04"
       key_pair      = "ahsoka"
-      ansible_roles = ["base"]
+      ansible_roles = ["base", "docker"]
       user_data     = data.template_file.userdata.rendered
     }
   ]
