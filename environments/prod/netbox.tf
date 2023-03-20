@@ -3,7 +3,8 @@ locals {
     "base",
     "haproxy_stratum",
     "docker",
-    "kaspa_node"
+    "kaspa_node",
+    "nexa_node"
   ]
 
   device_roles = [
