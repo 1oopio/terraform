@@ -1,22 +1,17 @@
 locals {
   vms = [
     {
-      name          = "test-sbg5-1"
-      status        = "active"
-      region        = "SBG5"
-      network       = "back"
-      flavor_name   = "d2-4"
-      image_name    = "Ubuntu 22.04"
-      key_pair      = "ahsoka"
-      ansible_roles = ["base", "docker", "kaspa_node", "nexa_node"]
-      user_data     = data.template_file.userdata.rendered
-      additional_disks = [
-        {
-          id        = 1
-          size      = 20
-          disk_type = "classic"
-        }
-      ]
+      name             = "test-sbg5-1"
+      status           = "active"
+      region           = "SBG5"
+      network          = "back"
+      flavor_name      = "d2-4"
+      image_name       = "Ubuntu 22.04"
+      key_pair         = "ahsoka"
+      ansible_roles    = ["base", "docker", "kaspa_node", "nexa_node"]
+      user_data        = data.template_file.userdata.rendered
+      additional_disks = []
+      monthly_billed   = true
     }
   ]
 }
@@ -51,6 +46,7 @@ module "vms" {
   netbox_site_id    = module.netbox.sites[each.value.region]
   user_data         = data.template_file.userdata.rendered
   additional_disks  = each.value.additional_disks
+  monthly_billed    = each.value.monthly_billed
 
   depends_on = [
     module.ssh_keys,

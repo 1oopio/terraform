@@ -82,3 +82,8 @@ variable "additional_disks" {
     error_message = "additional disk type must be classic, high-speed or high-speed-gen2"
   }
 }
+
+variable "monthly_billed" {
+  type    = bool
+  default = false
+}

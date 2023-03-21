@@ -15,6 +15,10 @@ resource "openstack_compute_instance_v2" "vm" {
     name = var.network
   }
 
+  metadata = {
+    "ovh-monthly-instance" = monthly_billed ? 1 : 0
+  }
+
   lifecycle {
     ignore_changes = [
       user_data,
