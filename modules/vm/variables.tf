@@ -67,3 +67,18 @@ variable "status" {
   }
   description = "values: active, offline"
 }
+
+variable "additional_disks" {
+  type = list(object({
+    id        = number
+    size      = number
+    disk_type = string
+  }))
+  default = []
+  validation {
+    condition = alltrue([
+      for disk in var.additional_disks : contains(["classic", "high-speed", "high-speed-gen2"], disk.disk_type)
+    ])
+    error_message = "additional disk type must be classic, high-speed or high-speed-gen2"
+  }
+}

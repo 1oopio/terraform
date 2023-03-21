@@ -23,6 +23,28 @@ resource "openstack_compute_instance_v2" "vm" {
   }
 }
 
+locals {
+  additional_disks_map = {
+    for disk in var.additional_disks : disk.id => disk
+  }
+}
+
+resource "openstack_blockstorage_volume_v3" "volume" {
+  for_each    = local.additional_disks_map
+  region      = var.region
+  size        = each.value.size
+  volume_type = each.value.disk_type
+  multiattach = false
+  description = "Created by Terraform"
+}
+
+resource "openstack_compute_volume_attach_v2" "volume_attach" {
+  for_each    = local.additional_disks_map
+  volume_id   = openstack_blockstorage_volume_v3.volume[each.key].id
+  instance_id = openstack_compute_instance_v2.vm.id
+  multiattach = false
+}
+
 data "openstack_compute_flavor_v2" "flavor" {
   name   = var.flavor_name
   region = var.region
