@@ -16,7 +16,7 @@ resource "openstack_compute_instance_v2" "vm" {
   }
 
   metadata = {
-    "ovh-monthly-instance" = monthly_billed ? 1 : 0
+    "ovh-monthly-instance" = var.monthly_billed ? 1 : 0
   }
 
   lifecycle {
