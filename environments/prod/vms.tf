@@ -5,7 +5,7 @@ locals {
       status           = "active"
       region           = "SBG5"
       network          = "back"
-      flavor_name      = "d2-4"
+      flavor_name      = "d2-8"
       image_name       = "Ubuntu 22.04"
       key_pair         = "ahsoka"
       ansible_roles    = ["base", "docker", "kaspa_node", "nexa_node"]
