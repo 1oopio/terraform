@@ -8,7 +8,7 @@ locals {
       flavor_name      = "d2-8"
       image_name       = "Ubuntu 22.04"
       key_pair         = "ahsoka"
-      ansible_roles    = ["base", "docker", "kaspa_node", "nexa_node"]
+      ansible_roles    = ["base", "docker", "kaspa_node", "nexa_node", "dero_node"]
       user_data        = data.template_file.userdata.rendered
       additional_disks = []
       monthly_billed   = true
